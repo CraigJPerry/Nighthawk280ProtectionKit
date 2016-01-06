@@ -69,5 +69,47 @@ pdb_width       = e_adj + f_adj + g_w + h_adj + i_adj;
 pdb_length      = a_opp + b_opp + c_len + d_opp + e_opp;
 
 
+module RightAngleTriangle(opposite, adjacent, thickness=pp_thickness, rotation=[0,0,0], translation=[0,0,0])
+{
+    translate(translation) {
+        rotate(rotation) {
+            linear_extrude(height=thickness) {
+                polygon(
+                    points=[[0,0],[adjacent,0],[0,opposite]],
+                    paths=[[0,1,2]]
+                );
+            }
+        }
+    }
+}
 
+
+module Rectangle(length, width, thickness=pp_thickness, rotation=[0,0,0], translation=[0,0,0])
+{
+    translate(translation) {
+        rotate(rotation) {
+            cube([length, width, thickness]);
+        }
+    }
+}
+
+
+module BottomPlate()
+{
+    difference() {
+        // Uncut base plate
+        Rectangle(pdb_width, pdb_length);
+        
+        // a
+        RightAngleTriangle(a_opp, a_adj);
+        
+        // b
+        RightAngleTriangle(b_opp, b_adj, rotation=[180,0,0], translation=[0,a_opp+b_opp,pp_thickness]);
+        
+        // m
+        RightAngleTriangle(32, 15, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness]);
+    }
+}
+
+BottomPlate();
 
