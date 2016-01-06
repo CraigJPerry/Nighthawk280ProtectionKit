@@ -68,6 +68,10 @@ m_adj = 15;
 pdb_width       = e_adj + f_adj + g_w + h_adj + i_adj;
 pdb_length      = a_opp + b_opp + c_len + d_opp + e_opp;
 
+// Sometimes rotated pieces fail to intersect their full thickness
+workaround_thickness = 2;
+workaround_offset = 1;
+
 
 module RightAngleTriangle(opposite, adjacent, thickness=pp_thickness, rotation=[0,0,0], translation=[0,0,0])
 {
@@ -128,7 +132,7 @@ module BottomPlate()
         RightAngleTriangle(i_opp, i_adj, rotation=[0,0,180], translation=[pdb_width,pdb_length,0]);
         
         // j
-        RightAngleTriangle(j_opp, j_adj, rotation=[0,180,0], translation=[pdb_width,a_opp+b_opp+c_len,pp_thickness]);
+        RightAngleTriangle(j_opp, j_adj, pp_thickness+workaround_thickness, rotation=[0,180,0], translation=[pdb_width,a_opp+b_opp+c_len,pp_thickness+workaround_offset]);
         
         // k
         Rectangle(k_w, k_len, translation=[pdb_width-k_w,a_opp+b_opp,0]);
@@ -137,7 +141,7 @@ module BottomPlate()
         RightAngleTriangle(l_opp, l_adj, rotation=[0,0,180], translation=[pdb_width,a_opp+b_opp,0]);
         
         // m
-        RightAngleTriangle(32, 15, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness]);
+        RightAngleTriangle(32, 15, pp_thickness+workaround_thickness, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness+workaround_offset]);
     }
 }
 
