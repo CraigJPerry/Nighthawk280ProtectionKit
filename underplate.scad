@@ -106,6 +106,36 @@ module BottomPlate()
         // b
         RightAngleTriangle(b_opp, b_adj, rotation=[180,0,0], translation=[0,a_opp+b_opp,pp_thickness]);
         
+        // c
+        Rectangle(c_w, c_len, translation=[0,a_opp+b_opp,0]);
+        
+        // d
+        RightAngleTriangle(d_opp, d_adj, translation=[0,a_opp+b_opp+c_len,0]);
+        
+        // e
+        RightAngleTriangle(e_opp, e_adj, rotation=[180,0,0], translation=[0,pdb_length,pp_thickness]);
+        
+        // f
+        RightAngleTriangle(f_opp, f_adj, rotation=[0,0,180], translation=[e_adj+f_adj,pdb_length,0]);
+        
+        // g
+        Rectangle(g_w, g_len, translation=[e_adj+f_adj,pdb_length-g_len,0]);
+        
+        // h
+        RightAngleTriangle(h_opp, h_adj, rotation=[180,0,0], translation=[e_adj+f_adj+g_w,pdb_length,pp_thickness]);
+        
+        // i
+        RightAngleTriangle(i_opp, i_adj, rotation=[0,0,180], translation=[pdb_width,pdb_length,0]);
+        
+        // j
+        RightAngleTriangle(j_opp, j_adj, rotation=[0,180,0], translation=[pdb_width,a_opp+b_opp+c_len,pp_thickness]);
+        
+        // k
+        Rectangle(k_w, k_len, translation=[pdb_width-k_w,a_opp+b_opp,0]);
+        
+        // l
+        RightAngleTriangle(l_opp, l_adj, rotation=[0,0,180], translation=[pdb_width,a_opp+b_opp,0]);
+        
         // m
         RightAngleTriangle(32, 15, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness]);
     }
