@@ -4,12 +4,13 @@
 // The board is a rectangle, 85mm wide x 141mm
 // tall, with right angle triangles (a, b, d,
 // e, f, h, i, j, l, m) and rectangles (c, g,
-// k) cut out.
+// k) cut out. There are holes drilled at o,
+// p, q, r, s, t & u.
 //
 //          e /\f   g   h/\ i
 //           /  \-------/  \
-//          /               \
-//          \               /
+//          /  r         s  \
+//          \ u           t /
 //          d\             /j
 //            |           |
 //            |           |
@@ -17,8 +18,8 @@
 //            |           |
 //          b/             \l
 //          /               \
-//          \               /
-//          a\             /m
+//          \  q         p  /
+//          a\  n       o  /m
 //            \___________/
 //
 //
@@ -32,6 +33,9 @@
 // Similarly, rectangles have width along
 // the X axis and length along the Y axis.
 //
+
+// Increase resolution of hole circumferences
+$fn = 60;
 
 // Protection plate
 pp_thickness = 2;
@@ -64,6 +68,25 @@ l_adj = 13;
 m_opp = 32;
 m_adj = 15;
 
+// Holes
+nut_diameter = 6 + 2;
+n_x = 14;
+n_y = 15;
+o_x = 71;
+o_y = 15;
+p_x = 78;
+p_y = 30;
+q_x = 7;
+q_y = 30;
+r_x = 14;
+r_y = 132;
+s_x = 71;
+s_y = 132;
+t_x = 7;
+t_y = 117;
+u_x = 78;
+u_y = 117;
+
 // Power distribution board
 pdb_width       = e_adj + f_adj + g_w + h_adj + i_adj;
 pdb_length      = a_opp + b_opp + c_len + d_opp + e_opp;
@@ -94,6 +117,14 @@ module Rectangle(length, width, thickness=pp_thickness, rotation=[0,0,0], transl
         rotate(rotation) {
             cube([length, width, thickness]);
         }
+    }
+}
+
+
+module Hole(x, y, diameter=nut_diameter, thickness=pp_thickness)
+{
+    translate([x,y,0]) {
+        cylinder(thickness, d=diameter);
     }
 }
 
@@ -142,6 +173,30 @@ module BottomPlate()
         
         // m
         RightAngleTriangle(32, 15, pp_thickness+workaround_thickness, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness+workaround_offset]);
+        
+        // n
+        Hole(n_x, n_y);
+        
+        // o
+        Hole(o_x, o_y);
+        
+        // p
+        Hole(p_x, p_y);
+        
+        // q
+        Hole(q_x, q_y);
+        
+        // r
+        Hole(r_x, r_y);
+        
+        // s
+        Hole(s_x, s_y);
+        
+        // t
+        #Hole(t_x, t_y);
+        
+        // u
+        Hole(u_x, u_y);
     }
 }
 
