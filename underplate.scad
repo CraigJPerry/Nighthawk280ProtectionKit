@@ -65,22 +65,22 @@ m_y = 32;
 
 // Holes
 nut_diameter = 6 + 2;
-n_x = 14;
-n_y = 15;
-o_x = 71;
-o_y = 15;
-p_x = 78;
-p_y = 30;
-q_x = 7;
-q_y = 30;
-r_x = 14;
-r_y = 132;
-s_x = 71;
-s_y = 132;
-t_x = 7;
-t_y = 117;
-u_x = 78;
-u_y = 117;
+n_x = 14.5;
+n_y = 15.5;
+o_x = 70.5;
+o_y = 15.5;
+p_x = 77;
+p_y = 29.5;
+q_x = 8;
+q_y = 29.5;
+r_x = 14.5;
+r_y = 132.5;
+s_x = 70.5;
+s_y = 132.5;
+t_x = 8;
+t_y = 118;
+u_x = 77;
+u_y = 118;
 
 // Power distribution board
 pdb_width       = e_x + f_x + g_x + h_x + i_x;
