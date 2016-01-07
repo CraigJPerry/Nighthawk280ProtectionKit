@@ -1,11 +1,13 @@
 // EMAX Nighthawk 280 Lower Protection Plate
 // Craig J Perry, Started on 30th Dec 2015
 //
-// The board is a rectangle, 85mm wide x 141mm
+// All dimensions are in mm.
+//
+// The board is a rectangle, 85 wide x 141
 // tall, with right angle triangles (a, b, d,
-// e, f, h, i, j, l, m) and rectangles (c, g,
-// k) cut out. There are holes drilled at o,
-// p, q, r, s, t & u.
+// e, f, h, i, j, l, m), rectangles (c, g,
+// k) and holes (o, p, q, r, s, t, u) cut out.
+//
 //
 //          e /\f   g   h/\ i
 //           /  \-------/  \
@@ -23,53 +25,43 @@
 //            \___________/
 //
 //
-// All dimensions are in mm.
-//
-// Triangles have opposite, adjacent and
-// hypotenuse edges. In this drawing, all
-// opposite edges run along the Y axis and
-// adjacent edges along the X axis.
-//
-// Similarly, rectangles have width along
-// the X axis and length along the Y axis.
-//
 
 // Increase resolution of hole circumferences
 $fn = 60;
 
-// Protection plate
+// Protection plate thickness
 pp_thickness = 2;
 
-// Side plate
+// Side plate height
 sp_height = 15;
 
 // Cutouts
-a_opp = 32;
-a_adj = 15;
-b_opp = 17;
-b_adj = 13;
-c_len = 50;
-c_w   = 13;
-d_opp = 17;
-d_adj = 13;
-e_opp = 25;
-e_adj = 12;
-f_opp = 4;
-f_adj = 17;
-g_len = 4;
-g_w   = 27;
-h_opp = 4;
-h_adj = 17;
-i_opp = 25;
-i_adj = 12;
-j_opp = 17;
-j_adj = 13;
-k_len = 50;
-k_w   = 13;
-l_opp = 17;
-l_adj = 13;
-m_opp = 32;
-m_adj = 15;
+a_x = 15;
+a_y = 32;
+b_x = 14;
+b_y = 17;
+c_x = 14;
+c_y = 50;
+d_x = 14;
+d_y = 17;
+e_x = 12;
+e_y = 25;
+f_x = 17;
+f_y = 4;
+g_x = 27;
+g_y = 4;
+h_x = 17;
+h_y = 4;
+i_x = 12;
+i_y = 25;
+j_x = 14;
+j_y = 17;
+k_x = 14;
+k_y = 50;
+l_x = 14;
+l_y = 17;
+m_x = 15;
+m_y = 32;
 
 // Holes
 nut_diameter = 6 + 2;
@@ -91,21 +83,23 @@ u_x = 78;
 u_y = 117;
 
 // Power distribution board
-pdb_width       = e_adj + f_adj + g_w + h_adj + i_adj;
-pdb_length      = a_opp + b_opp + c_len + d_opp + e_opp;
+pdb_width       = e_x + f_x + g_x + h_x + i_x;
+pdb_length      = a_y + b_y + c_y + d_y + e_y;
 
 // Sometimes rotated pieces fail to intersect their full thickness
 workaround_thickness = 2;
 workaround_offset = 1;
 
 
-module RightAngleTriangle(opposite, adjacent, thickness=pp_thickness, rotation=[0,0,0], translation=[0,0,0])
+module RightAngleTriangle(x_len, y_len, translation=[0,0,0], thickness=pp_thickness)
 {
+    x_offset = sign(x_len);
+    y_offset = sign(y_len);
     translate(translation) {
-        rotate(rotation) {
-            linear_extrude(height=thickness) {
+        translate([-x_offset, -y_offset, -workaround_thickness/2]) {    
+            linear_extrude(height=thickness+workaround_thickness) {
                 polygon(
-                    points=[[0,0],[adjacent,0],[0,opposite]],
+                    points=[[0,0],[x_len+x_offset,0],[0,y_len+y_offset]],
                     paths=[[0,1,2]]
                 );
             }
@@ -114,11 +108,13 @@ module RightAngleTriangle(opposite, adjacent, thickness=pp_thickness, rotation=[
 }
 
 
-module Rectangle(length, width, thickness=pp_thickness, rotation=[0,0,0], translation=[0,0,0])
+module Rectangle(x, y, translation=[0,0,0], thickness=pp_thickness, z_rotation=0)
 {
     translate(translation) {
-        rotate(rotation) {
-            cube([length, width, thickness]);
+        translate([0,0, -workaround_thickness/2]) {
+            rotate([0,0,z_rotation]) {
+                cube([x, y, thickness+workaround_thickness]);
+            }
         }
     }
 }
@@ -126,8 +122,8 @@ module Rectangle(length, width, thickness=pp_thickness, rotation=[0,0,0], transl
 
 module Hole(x, y, diameter=nut_diameter, thickness=pp_thickness)
 {
-    translate([x,y,0]) {
-        cylinder(thickness, d=diameter);
+    translate([x,y,0-workaround_offset]) {
+        cylinder(thickness+workaround_thickness, d=diameter);
     }
 }
 
@@ -136,46 +132,46 @@ module BottomPlate()
 {
     difference() {
         // Uncut base plate
-        Rectangle(pdb_width, pdb_length);
+        cube([pdb_width, pdb_length, pp_thickness]);
         
         // a
-        RightAngleTriangle(a_opp, a_adj);
+        RightAngleTriangle(a_x, a_y);
         
         // b
-        RightAngleTriangle(b_opp, b_adj, rotation=[180,0,0], translation=[0,a_opp+b_opp,pp_thickness]);
+        RightAngleTriangle(b_x, -b_y, [0,a_y+b_y,0]);
         
         // c
-        Rectangle(c_w, c_len, translation=[0,a_opp+b_opp,0]);
+        Rectangle(c_x, c_y, [0,a_y+b_y,0]);
         
         // d
-        RightAngleTriangle(d_opp, d_adj, translation=[0,a_opp+b_opp+c_len,0]);
+        RightAngleTriangle(d_x, d_y, [0,a_y+b_y+c_y,0]);
         
         // e
-        RightAngleTriangle(e_opp, e_adj, rotation=[180,0,0], translation=[0,pdb_length,pp_thickness]);
+        RightAngleTriangle(e_x, -e_y, [0,pdb_length,0]);
         
         // f
-        RightAngleTriangle(f_opp, f_adj, rotation=[0,0,180], translation=[e_adj+f_adj,pdb_length,0]);
+        RightAngleTriangle(-f_x, -f_y, [e_x+f_x,pdb_length,0]);
         
         // g
-        Rectangle(g_w, g_len, translation=[e_adj+f_adj,pdb_length-g_len,0]);
+        Rectangle(g_x, g_y, [e_x+f_x,pdb_length-g_y,0]);
         
         // h
-        RightAngleTriangle(h_opp, h_adj, rotation=[180,0,0], translation=[e_adj+f_adj+g_w,pdb_length,pp_thickness]);
+        RightAngleTriangle(h_x, -h_y, [e_x+f_x+g_x,pdb_length,0]);
         
         // i
-        RightAngleTriangle(i_opp, i_adj, rotation=[0,0,180], translation=[pdb_width,pdb_length,0]);
+        RightAngleTriangle(-i_x, -i_y, [pdb_width,pdb_length,0]);
         
         // j
-        RightAngleTriangle(j_opp, j_adj, pp_thickness+workaround_thickness, rotation=[0,180,0], translation=[pdb_width,a_opp+b_opp+c_len,pp_thickness+workaround_offset]);
+        RightAngleTriangle(-j_x, j_y, [pdb_width,m_y+l_y+k_y,0]);
         
         // k
-        Rectangle(k_w, k_len, translation=[pdb_width-k_w,a_opp+b_opp,0]);
+        Rectangle(k_x, k_y, [pdb_width-k_x,m_y+l_y,0]);
         
         // l
-        RightAngleTriangle(l_opp, l_adj, rotation=[0,0,180], translation=[pdb_width,a_opp+b_opp,0]);
+        RightAngleTriangle(-l_x, -l_y, [pdb_width,m_y+l_y,0]);
         
         // m
-        RightAngleTriangle(m_opp, m_adj, pp_thickness+workaround_thickness, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness+workaround_offset]);
+        RightAngleTriangle(-m_x, m_y, [pdb_width,0,0]);
         
         // n
         Hole(n_x, n_y);
@@ -208,40 +204,40 @@ module BottomPlate()
 // with the diagram above. "B" is the side plate part sitting on
 // the edge that "b" creates with its hypotenuse.
 
-B_len = sqrt((b_opp * b_opp) + (b_adj * b_adj));  // Pythagoras
-B_rot = 90+(atan(b_opp/b_adj));                   // sohcahTOA
-D_len = sqrt((d_opp * d_opp) + (d_adj * d_adj));
-D_rot = 270-(atan(d_opp/d_adj));
-J_len = sqrt((b_opp * b_opp) + (b_adj * b_adj));
-J_rot = 270-(atan(b_opp/b_adj));
-L_len = sqrt((d_opp * d_opp) + (d_adj * d_adj));
-L_rot = 270+(atan(d_opp/d_adj));
+B_len = sqrt((b_x * b_x) + (b_y * b_y));  // Pythagoras
+B_rot = 90+(atan(b_y/b_x));               // sohcahTOA
+D_len = sqrt((d_x * d_x) + (d_y * d_y));
+D_rot = 270-(atan(d_y/d_x));
+J_len = sqrt((l_x * l_x) + (l_y * l_y));
+J_rot = 270+(atan(l_y/l_x));
+L_len = sqrt((j_x * j_x) + (j_y * j_y));
+L_rot = 90-(atan(j_y/j_x));
 
 
 module SidePlate()
 {
-    // B
-    Rectangle(pp_thickness, B_len, sp_height, [0,0,B_rot],[b_adj,a_opp+b_opp,0]);
-    
-    // C
-    Rectangle(pp_thickness, c_len, sp_height, translation=[c_w-pp_thickness,a_opp+b_opp,0]);
-    
-    // D
-    Rectangle(pp_thickness, D_len, sp_height, [0,0,D_rot],[0,a_opp+b_opp+c_len+d_opp,0]);
-    
-    // J
-    Rectangle(pp_thickness, J_len, sp_height, [0,180,J_rot],[pdb_width-b_adj,a_opp+b_opp,sp_height]);
-    
-    difference() {
-        // K
-        Rectangle(pp_thickness, k_len, sp_height, translation=[pdb_width-k_w,a_opp+b_opp,0]);
+        // B
+        Rectangle(pp_thickness, B_len, [b_x,a_y+b_y,0], sp_height, B_rot);
         
-        // USB hole
-        Rectangle(pp_thickness+workaround_thickness, 15, 8, translation=[pdb_width-k_w-workaround_offset,a_opp+b_opp+5,3]);
-    }
-    
-    // L
-    Rectangle(pp_thickness, L_len, sp_height, [0,0,L_rot],[pdb_width-d_adj,a_opp+b_opp+c_len,0]);
+        // C
+        Rectangle(pp_thickness, c_y, [c_x-pp_thickness,a_y+b_y,0], sp_height);
+        
+        // D
+        Rectangle(pp_thickness, D_len, [0,a_y+b_y+c_y+d_y,0], sp_height, D_rot);
+        
+        // J
+        Rectangle(pp_thickness, J_len, [pdb_width-l_x,m_y+l_y+k_y,0], sp_height, J_rot);
+        
+        difference() {
+            // K
+            Rectangle(pp_thickness, k_y, [pdb_width-k_x,m_y+l_y,0], sp_height);
+            
+            // USB hole
+            Rectangle(pp_thickness*2, 15, [pdb_width-k_x-pp_thickness/2,m_y+l_y+5,3], 8);
+        }
+        
+        // L
+        Rectangle(pp_thickness, L_len, [pdb_width,m_y,0], sp_height, L_rot);
 }
 
 
