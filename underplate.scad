@@ -208,15 +208,22 @@ module BottomPlate()
 // with the diagram above. "B" is the side plate part sitting on
 // the edge that "b" creates with its hypotenuse.
 
-B_w   = pp_thickness;
 B_len = sqrt((b_opp * b_opp) + (b_adj * b_adj));  // Pythagoras
-B_h   = sp_height;
 B_rot = 90+(atan(b_opp/b_adj));                   // sohcahTOA
+D_len = sqrt((d_opp * d_opp) + (d_adj * d_adj));
+D_rot = 270-(atan(d_opp/d_adj));
+
 
 module SidePlate()
 {
     // B
-    Rectangle(B_w, B_len, B_h, [0,0,B_rot],[b_adj,a_opp+b_opp,0]);
+    Rectangle(pp_thickness, B_len, sp_height, [0,0,B_rot],[b_adj,a_opp+b_opp,0]);
+    
+    // C
+    Rectangle(pp_thickness, c_len, sp_height, translation=[c_w-pp_thickness,a_opp+b_opp,0]);
+    
+    // D
+    Rectangle(pp_thickness, D_len, sp_height, [0,0,D_rot],[0,a_opp+b_opp+c_len+d_opp,0]);
 }
 
 
