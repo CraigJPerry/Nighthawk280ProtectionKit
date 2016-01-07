@@ -175,7 +175,7 @@ module BottomPlate()
         RightAngleTriangle(l_opp, l_adj, rotation=[0,0,180], translation=[pdb_width,a_opp+b_opp,0]);
         
         // m
-        RightAngleTriangle(32, 15, pp_thickness+workaround_thickness, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness+workaround_offset]);
+        RightAngleTriangle(m_opp, m_adj, pp_thickness+workaround_thickness, rotation=[0,180,0], translation=[pdb_width,0,pp_thickness+workaround_offset]);
         
         // n
         Hole(n_x, n_y);
@@ -237,7 +237,7 @@ module SidePlate()
         Rectangle(pp_thickness, k_len, sp_height, translation=[pdb_width-k_w,a_opp+b_opp,0]);
         
         // USB hole
-        #Rectangle(pp_thickness+workaround_thickness, 15, 8, translation=[pdb_width-k_w-workaround_offset,a_opp+b_opp+5,3]);
+        Rectangle(pp_thickness+workaround_thickness, 15, 8, translation=[pdb_width-k_w-workaround_offset,a_opp+b_opp+5,3]);
     }
     
     // L
