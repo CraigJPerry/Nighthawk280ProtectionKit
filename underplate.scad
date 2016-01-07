@@ -40,6 +40,9 @@ $fn = 60;
 // Protection plate
 pp_thickness = 2;
 
+// Side plate
+sp_height = 15;
+
 // Cutouts
 a_opp = 32;
 a_adj = 15;
@@ -193,12 +196,32 @@ module BottomPlate()
         Hole(s_x, s_y);
         
         // t
-        #Hole(t_x, t_y);
+        Hole(t_x, t_y);
         
         // u
         Hole(u_x, u_y);
     }
 }
 
-BottomPlate();
+
+// Side plate components are denoted by upper case, but correspond
+// with the diagram above. "B" is the side plate part sitting on
+// the edge that "b" creates with its hypotenuse.
+
+B_w   = pp_thickness;
+B_len = sqrt((b_opp * b_opp) + (b_adj * b_adj));  // Pythagoras
+B_h   = sp_height;
+B_rot = 90+(atan(b_opp/b_adj));                   // sohcahTOA
+
+module SidePlate()
+{
+    // B
+    Rectangle(B_w, B_len, B_h, [0,0,B_rot],[b_adj,a_opp+b_opp,0]);
+}
+
+
+union() {
+    BottomPlate();
+    SidePlate();
+}
 
