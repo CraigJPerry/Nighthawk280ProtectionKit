@@ -232,8 +232,13 @@ module SidePlate()
     // J
     Rectangle(pp_thickness, J_len, sp_height, [0,180,J_rot],[pdb_width-b_adj,a_opp+b_opp,sp_height]);
     
-    // K
-    Rectangle(pp_thickness, k_len, sp_height, translation=[pdb_width-k_w,a_opp+b_opp,0]);
+    difference() {
+        // K
+        Rectangle(pp_thickness, k_len, sp_height, translation=[pdb_width-k_w,a_opp+b_opp,0]);
+        
+        // USB hole
+        #Rectangle(pp_thickness+workaround_thickness, 15, 8, translation=[pdb_width-k_w-workaround_offset,a_opp+b_opp+5,3]);
+    }
     
     // L
     Rectangle(pp_thickness, L_len, sp_height, [0,0,L_rot],[pdb_width-d_adj,a_opp+b_opp+c_len,0]);
