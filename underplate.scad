@@ -40,6 +40,9 @@ $fn = 60;
 // Protection plate
 pp_thickness = 2;
 
+// Side plate
+sp_height = 15;
+
 // Cutouts
 a_opp = 32;
 a_adj = 15;
@@ -193,12 +196,57 @@ module BottomPlate()
         Hole(s_x, s_y);
         
         // t
-        #Hole(t_x, t_y);
+        Hole(t_x, t_y);
         
         // u
         Hole(u_x, u_y);
     }
 }
 
-BottomPlate();
+
+// Side plate components are denoted by upper case, but correspond
+// with the diagram above. "B" is the side plate part sitting on
+// the edge that "b" creates with its hypotenuse.
+
+B_len = sqrt((b_opp * b_opp) + (b_adj * b_adj));  // Pythagoras
+B_rot = 90+(atan(b_opp/b_adj));                   // sohcahTOA
+D_len = sqrt((d_opp * d_opp) + (d_adj * d_adj));
+D_rot = 270-(atan(d_opp/d_adj));
+J_len = sqrt((b_opp * b_opp) + (b_adj * b_adj));
+J_rot = 270-(atan(b_opp/b_adj));
+L_len = sqrt((d_opp * d_opp) + (d_adj * d_adj));
+L_rot = 270+(atan(d_opp/d_adj));
+
+
+module SidePlate()
+{
+    // B
+    Rectangle(pp_thickness, B_len, sp_height, [0,0,B_rot],[b_adj,a_opp+b_opp,0]);
+    
+    // C
+    Rectangle(pp_thickness, c_len, sp_height, translation=[c_w-pp_thickness,a_opp+b_opp,0]);
+    
+    // D
+    Rectangle(pp_thickness, D_len, sp_height, [0,0,D_rot],[0,a_opp+b_opp+c_len+d_opp,0]);
+    
+    // J
+    Rectangle(pp_thickness, J_len, sp_height, [0,180,J_rot],[pdb_width-b_adj,a_opp+b_opp,sp_height]);
+    
+    difference() {
+        // K
+        Rectangle(pp_thickness, k_len, sp_height, translation=[pdb_width-k_w,a_opp+b_opp,0]);
+        
+        // USB hole
+        #Rectangle(pp_thickness+workaround_thickness, 15, 8, translation=[pdb_width-k_w-workaround_offset,a_opp+b_opp+5,3]);
+    }
+    
+    // L
+    Rectangle(pp_thickness, L_len, sp_height, [0,0,L_rot],[pdb_width-d_adj,a_opp+b_opp+c_len,0]);
+}
+
+
+union() {
+    BottomPlate();
+    SidePlate();
+}
 
