@@ -216,33 +216,39 @@ L_rot = 90-(atan(j_y/j_x));
 
 module SidePlate()
 {
-        // B
-        Rectangle(pp_thickness, B_len, [b_x,a_y+b_y,0], sp_height, B_rot);
+    // B
+    Rectangle(pp_thickness, B_len, [b_x,a_y+b_y,0], sp_height, B_rot);
+    
+    // C
+    Rectangle(pp_thickness, c_y, [c_x-pp_thickness,a_y+b_y,0], sp_height);
+    
+    // D
+    Rectangle(pp_thickness, D_len, [0,a_y+b_y+c_y+d_y,0], sp_height, D_rot);
+    
+    // J
+    Rectangle(pp_thickness, J_len, [pdb_width-l_x,m_y+l_y+k_y,0], sp_height, J_rot);
+    
+    difference() {
+        // K
+        Rectangle(pp_thickness, k_y, [pdb_width-k_x,m_y+l_y,0], sp_height);
         
-        // C
-        Rectangle(pp_thickness, c_y, [c_x-pp_thickness,a_y+b_y,0], sp_height);
+        // USB hole
+        Rectangle(pp_thickness*2, 12, [pdb_width-k_x-pp_thickness/2,m_y+l_y+4,3], 10);
+    }
+    
+    // L
+    Rectangle(pp_thickness, L_len, [pdb_width,m_y,0], sp_height, L_rot);
+}
+
+
+module Fillets()
+{
         
-        // D
-        Rectangle(pp_thickness, D_len, [0,a_y+b_y+c_y+d_y,0], sp_height, D_rot);
-        
-        // J
-        Rectangle(pp_thickness, J_len, [pdb_width-l_x,m_y+l_y+k_y,0], sp_height, J_rot);
-        
-        difference() {
-            // K
-            Rectangle(pp_thickness, k_y, [pdb_width-k_x,m_y+l_y,0], sp_height);
-            
-            // USB hole
-            Rectangle(pp_thickness*2, 12, [pdb_width-k_x-pp_thickness/2,m_y+l_y+4,3], 10);
-        }
-        
-        // L
-        Rectangle(pp_thickness, L_len, [pdb_width,m_y,0], sp_height, L_rot);
 }
 
 
 union() {
     BottomPlate();
     SidePlate();
+    Fillets();
 }
-
