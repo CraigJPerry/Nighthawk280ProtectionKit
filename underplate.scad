@@ -32,8 +32,16 @@ $fn = 60;
 // Protection plate thickness
 pp_thickness = 2;
 
+// Pieces fail to intersect their full thickness sometimes so I
+// oversize them to be sure
+cut_extra = 2;
+
 // Side plate height
 sp_height = 15;
+
+// Fillets
+f_height = 2;
+f_width  = 3;
 
 // Cutouts
 a_x = 15;
@@ -86,18 +94,14 @@ u_y = 118;
 pdb_width       = e_x + f_x + g_x + h_x + i_x;
 pdb_length      = a_y + b_y + c_y + d_y + e_y;
 
-// Sometimes rotated pieces fail to intersect their full thickness
-workaround_thickness = 2;
-workaround_offset = 1;
-
 
 module RightAngleTriangle(x_len, y_len, translation=[0,0,0], thickness=pp_thickness)
 {
     x_offset = sign(x_len);
     y_offset = sign(y_len);
     translate(translation) {
-        translate([-x_offset, -y_offset, -workaround_thickness/2]) {    
-            linear_extrude(height=thickness+workaround_thickness) {
+        translate([-x_offset, -y_offset, -cut_extra/2]) {    
+            linear_extrude(height=thickness+cut_extra) {
                 polygon(
                     points=[[0,0],[x_len+x_offset,0],[0,y_len+y_offset]],
                     paths=[[0,1,2]]
@@ -111,9 +115,25 @@ module RightAngleTriangle(x_len, y_len, translation=[0,0,0], thickness=pp_thickn
 module Rectangle(x, y, translation=[0,0,0], thickness=pp_thickness, z_rotation=0)
 {
     translate(translation) {
-        translate([0,0, -workaround_thickness/2]) {
+        translate([0,0, -cut_extra/2]) {
             rotate([0,0,z_rotation]) {
-                cube([x, y, thickness+workaround_thickness]);
+                cube([x, y, thickness+cut_extra]);
+            }
+        }
+    }
+}
+
+
+module NotchedWall(x, y, height=pp_thickness, translation=[0,0,0], z_rotation=0)
+{
+    translate(translation) {
+        rotate([0,0,z_rotation]) {
+            union() {
+                cube([x, y, height]);
+                translate([-f_width,0,pp_thickness])
+                cube([f_width, y, f_height]);
+                rotate([270,180,0])
+                #RightAngleTriangle(1, 1, [0,pp_thickness+f_height+3,5], y/2);
             }
         }
     }
@@ -122,8 +142,8 @@ module Rectangle(x, y, translation=[0,0,0], thickness=pp_thickness, z_rotation=0
 
 module Hole(x, y, diameter=nut_diameter, thickness=pp_thickness)
 {
-    translate([x,y,0-workaround_offset]) {
-        cylinder(thickness+workaround_thickness, d=diameter);
+    translate([x,y,0-cut_extra/2]) {
+        cylinder(thickness+cut_extra, d=diameter);
     }
 }
 
@@ -216,28 +236,31 @@ L_rot = 90-(atan(j_y/j_x));
 
 module SidePlate()
 {
-        // B
-        Rectangle(pp_thickness, B_len, [b_x,a_y+b_y,0], sp_height, B_rot);
+    // B
+    NotchedWall(pp_thickness, B_len, sp_height, [b_x,a_y+b_y,0], B_rot);
+    
+    // C
+    translate([c_x-pp_thickness,a_y+b_y,0])
+    cube([pp_thickness,c_y,sp_height]);
+    
+    // D
+    NotchedWall(pp_thickness, D_len, sp_height, [0,a_y+b_y+c_y+d_y,0], D_rot);
+    
+    // J
+    NotchedWall(pp_thickness, J_len, sp_height, [pdb_width-l_x,m_y+l_y+k_y,0], J_rot);
+    
+    difference() {
+        // K
+        translate([pdb_width-k_x,m_y+l_y,0])
+        cube([pp_thickness,k_y,sp_height]);
         
-        // C
-        Rectangle(pp_thickness, c_y, [c_x-pp_thickness,a_y+b_y,0], sp_height);
-        
-        // D
-        Rectangle(pp_thickness, D_len, [0,a_y+b_y+c_y+d_y,0], sp_height, D_rot);
-        
-        // J
-        Rectangle(pp_thickness, J_len, [pdb_width-l_x,m_y+l_y+k_y,0], sp_height, J_rot);
-        
-        difference() {
-            // K
-            Rectangle(pp_thickness, k_y, [pdb_width-k_x,m_y+l_y,0], sp_height);
-            
-            // USB hole
-            Rectangle(pp_thickness*2, 12, [pdb_width-k_x-pp_thickness/2,m_y+l_y+4,3], 10);
-        }
-        
-        // L
-        Rectangle(pp_thickness, L_len, [pdb_width,m_y,0], sp_height, L_rot);
+        // USB hole
+        translate([pdb_width-k_x-pp_thickness/2,m_y+l_y+4,3])
+        cube([pp_thickness*2,12,10]);
+    }
+    
+    // L
+    NotchedWall(pp_thickness, L_len, sp_height, [pdb_width,m_y,0], L_rot);
 }
 
 
@@ -245,4 +268,3 @@ union() {
     BottomPlate();
     SidePlate();
 }
-
