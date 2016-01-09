@@ -37,11 +37,15 @@ pp_thickness = 2;
 cut_extra = 2;
 
 // Side plate height
-sp_height = 15;
+sp_height = 18;
 
 // Fillets
-f_height = 2;
+f_height = 4;
 f_width  = 3;
+
+// USB Hole
+usb_height = 8;
+usb_width  = 12;
 
 // Cutouts
 a_x = 15;
@@ -73,22 +77,22 @@ m_y = 32;
 
 // Holes
 nut_diameter = 6 + 2;
-n_x = 14.5;
-n_y = 15.5;
-o_x = 70.5;
-o_y = 15.5;
+n_x = 14;
+n_y = 16;
+o_x = 71;
+o_y = 16;
 p_x = 77;
-p_y = 29.5;
+p_y = 30;
 q_x = 8;
-q_y = 29.5;
+q_y = 30;
 r_x = 14.5;
-r_y = 132.5;
+r_y = 133;
 s_x = 70.5;
-s_y = 132.5;
-t_x = 8;
-t_y = 118;
-u_x = 77;
-u_y = 118;
+s_y = 133;
+t_x = 7;
+t_y = 119;
+u_x = 78;
+u_y = 119;
 
 // Power distribution board
 pdb_width       = e_x + f_x + g_x + h_x + i_x;
@@ -133,7 +137,7 @@ module NotchedWall(x, y, height=pp_thickness, translation=[0,0,0], z_rotation=0)
                 translate([-f_width,0,pp_thickness])
                 cube([f_width, y, f_height]);
                 rotate([270,180,0])
-                #RightAngleTriangle(1, 1, [0,pp_thickness+f_height+3,5], y/2);
+                RightAngleTriangle(1, 1, [0,pp_thickness+f_height+4,5], y/2);
             }
         }
     }
@@ -255,8 +259,8 @@ module SidePlate()
         cube([pp_thickness,k_y,sp_height]);
         
         // USB hole
-        translate([pdb_width-k_x-pp_thickness/2,m_y+l_y+4,3])
-        cube([pp_thickness*2,12,10]);
+        translate([pdb_width-k_x-pp_thickness/2,m_y+l_y+(usb_width/2),pp_thickness+f_height])
+        cube([pp_thickness*2,usb_width,usb_height]);
     }
     
     // L
