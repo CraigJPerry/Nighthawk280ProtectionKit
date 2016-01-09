@@ -40,7 +40,7 @@ cut_extra = 2;
 sp_height = 15;
 
 // Fillets
-f_height = 2;
+f_height = 5;
 f_width  = 3;
 
 // Cutouts
@@ -133,7 +133,7 @@ module NotchedWall(x, y, height=pp_thickness, translation=[0,0,0], z_rotation=0)
                 translate([-f_width,0,pp_thickness])
                 cube([f_width, y, f_height]);
                 rotate([270,180,0])
-                #RightAngleTriangle(1, 1, [0,pp_thickness+f_height+3,5], y/2);
+                RightAngleTriangle(1, 1, [0,pp_thickness+f_height+4,5], y/2);
             }
         }
     }
