@@ -46,6 +46,7 @@ f_width  = 3;
 // USB Hole
 usb_height = 8;
 usb_width  = 12;
+chamfer    = 2;
 
 // Cutouts
 a_x = 15;
@@ -259,8 +260,11 @@ module SidePlate()
         cube([pp_thickness,k_y,sp_height]);
         
         // USB hole
-        translate([pdb_width-k_x-pp_thickness/2,m_y+l_y+(usb_width/2),pp_thickness+f_height])
-        cube([pp_thickness*2,usb_width,usb_height]);
+        translate([pdb_width-k_x-pp_thickness/2,m_y+l_y+(usb_width/2)+(chamfer/2),pp_thickness+f_height+(chamfer/2)])
+        minkowski() {
+            cube([pp_thickness*2,usb_width-pp_thickness,usb_height-pp_thickness]);
+            sphere(chamfer);
+        }
     }
     
     // L
