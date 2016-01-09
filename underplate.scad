@@ -37,11 +37,15 @@ pp_thickness = 2;
 cut_extra = 2;
 
 // Side plate height
-sp_height = 15;
+sp_height = 18;
 
 // Fillets
 f_height = 4;
 f_width  = 3;
+
+// USB Hole
+usb_height = 8;
+usb_width  = 12;
 
 // Cutouts
 a_x = 15;
@@ -255,8 +259,8 @@ module SidePlate()
         cube([pp_thickness,k_y,sp_height]);
         
         // USB hole
-        translate([pdb_width-k_x-pp_thickness/2,m_y+l_y+4,3])
-        cube([pp_thickness*2,12,10]);
+        translate([pdb_width-k_x-pp_thickness/2,m_y+l_y+(usb_width/2),pp_thickness+f_height])
+        cube([pp_thickness*2,usb_width,usb_height]);
     }
     
     // L
