@@ -40,7 +40,7 @@ cut_extra = 2;
 sp_height = 15;
 
 // Fillets
-f_height = 5;
+f_height = 4;
 f_width  = 3;
 
 // Cutouts
