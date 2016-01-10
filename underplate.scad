@@ -78,10 +78,10 @@ m_y = 32;
 
 // Holes
 nut_diameter = 6 + 2;
- r_x = 14; r_y = 133; s_x = 71;   s_y = 133;
-u_x = 7;  u_y = 119;   t_x = 78; t_y = 119;
-q_x = 7;  q_y = 31;    p_x = 78;   p_y = 31;
- n_x = 14; n_y = 16;  o_x = 71;   o_y = 16;
+ r_x = 14; r_y = 133; s_x = 72;   s_y = 133;
+u_x = 8;  u_y = 119;   t_x = 78; t_y = 119;
+q_x = 8;  q_y = 31;    p_x = 78;   p_y = 31;
+ n_x = 14; n_y = 16;  o_x = 72;   o_y = 16;
 
 
 // Power distribution board
@@ -127,7 +127,7 @@ module NotchedWall(x, y, height=pp_thickness, translation=[0,0,0], z_rotation=0)
                 translate([-f_width,0,pp_thickness])
                 cube([f_width, y, f_height]);
                 rotate([270,180,0])
-                RightAngleTriangle(1, 1, [0,pp_thickness+f_height+4,5], y/2);
+                RightAngleTriangle(1, 1, [0,pp_thickness+f_height+3.5,5], y/2);
             }
         }
     }
