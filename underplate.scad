@@ -78,10 +78,10 @@ m_y = 32;
 
 // Holes
 nut_diameter = 6 + 2;
- r_x = 14; r_y = 133; s_x = 72;   s_y = 133;
+ r_x = 13; r_y = 133; s_x = 73;   s_y = 133;
 u_x = 8;  u_y = 119;   t_x = 78; t_y = 119;
 q_x = 8;  q_y = 31;    p_x = 78;   p_y = 31;
- n_x = 14; n_y = 16;  o_x = 72;   o_y = 16;
+ n_x = 13; n_y = 16;  o_x = 73;   o_y = 16;
 
 
 // Power distribution board
