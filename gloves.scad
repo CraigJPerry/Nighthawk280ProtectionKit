@@ -1,47 +1,83 @@
-// EMAX Nighthawk 280 Arm End Protectors
-// Craig J Perry, Started on 10th Jan 2016
+// EMAX Nighthawk 280 Leg Replacements (Gloves)
+// Craig J Perry, Started on 31st Jan 2015
 //
 // All dimensions are in mm.
 //
-// Although the arms have differences, these
-// gloves are universal and will fit any arm.
+// These gloves clip onto the ends of the arms,
+// or the "hands" - where the motors are mounted.
+//
+//         North
+//       __________
+//      |          |
+//      | a      b |
+// West |          | East
+//      | d      c |
+//      |          |
+//      |         /
+//       \       /
+//    
+//         South
+//
+//           Top
+//        ___________
+// Front |___________| Rear
+//         ||   ||
+//    
+//           Back
 //
 
-// Increase resolution of hole circumferences
-$fn = 60;
+$fn = 30;
+function pythagoras(a,b) = sqrt(a*a + b*b);
 
-// Protection plate thickness
-pp_thickness = 2;
+west_to_east     =  34;
+north_to_south   =  34;
+top_to_bottom    =   4;
+screw_cap_height =   3;
+screw_cap_radius =   3;
+hole_diameter    = 2.5;
+west_to_a        =  10;
+north_to_a       =  12;
+west_to_b        =  22;
+north_to_b       =  11;
+west_to_c        =  21;
+north_to_c       =  23;
+west_to_d        =   9;
+north_to_d       =  24;
 
-// Pieces fail to intersect their full thickness sometimes so I
-// oversize them to be sure
-cut_extra = 2;
+glove_thickness = top_to_bottom + 2;
 
+corner_to_centre = pythagoras(west_to_east/2, north_to_south/2);
 
-module Rectangle(x, y, translation=[0,0,0], thickness=pp_thickness, z_rotation=0)
+module ScrewCapHole(west_offset, north_offset)
 {
-    translate(translation) {
-        translate([0,0, -cut_extra/2]) {
-            rotate([0,0,z_rotation]) {
-                cube([x, y, thickness+cut_extra]);
-            }
-        }
+    translate([(-west_to_east/2)+west_offset+screw_cap_radius+0.5,(north_to_south/2)-north_offset-screw_cap_radius-0.5,-1])
+    cylinder(h=screw_cap_height+3, r=screw_cap_radius+0.5);
+}
+
+module SphericalGlove()
+{
+    difference() {
+        sphere(r=west_to_east/2);
+        
+        translate([0,0,-corner_to_centre/2])
+        cube([corner_to_centre*2,corner_to_centre*2,corner_to_centre], center=true);
+        
+        ScrewCapHole(west_to_a, north_to_a);
+        ScrewCapHole(west_to_b, north_to_b);
+        ScrewCapHole(west_to_c, north_to_c);
+        ScrewCapHole(west_to_d, north_to_d);
     }
 }
 
+translate([0,40,0])
+SphericalGlove();
 
-module Hole(x, y, diameter=nut_diameter, thickness=pp_thickness)
-{
-    translate([x,y,0-cut_extra/2]) {
-        cylinder(thickness+cut_extra, d=diameter);
-    }
-}
+SphericalGlove();
 
+translate([40,0,0])
+mirror()
+SphericalGlove();
 
-module Glove()
-{
-    
-}
-
-
-Glove();
+translate([40,40,0])
+mirror()
+SphericalGlove();
