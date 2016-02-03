@@ -36,13 +36,13 @@ screw_cap_height =   3;
 screw_cap_radius =   3;
 hole_diameter    = 2.5;
 west_to_a        =  10;
-north_to_a       =  12;
+north_to_a       =   8;
 west_to_b        =  22;
-north_to_b       =  11;
+north_to_b       =   7;
 west_to_c        =  21;
-north_to_c       =  23;
+north_to_c       =  19;
 west_to_d        =   9;
-north_to_d       =  24;
+north_to_d       =  20;
 
 glove_thickness = top_to_bottom + 2;
 
@@ -69,15 +69,6 @@ module SphericalGlove()
     }
 }
 
-translate([0,40,0])
 SphericalGlove();
 
-SphericalGlove();
 
-translate([40,0,0])
-mirror()
-SphericalGlove();
-
-translate([40,40,0])
-mirror()
-SphericalGlove();
